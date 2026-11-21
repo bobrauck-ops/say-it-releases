@@ -1,0 +1,1185 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Say It Mac Guide</title>
+<meta name="description" content="Installation and user guide for Say It, push-to-talk dictation for macOS.">
+<style>
+  :root {
+    --coral: #FF6B4A;
+    --pink: #FF3D7F;
+    --violet: #7B5CFF;
+    --sunrise: linear-gradient(90deg, var(--coral), var(--pink) 50%, var(--violet));
+    --sunrise-diag: linear-gradient(135deg, var(--coral), var(--pink) 50%, var(--violet));
+
+    --bg: #FBFAFC;
+    --surface: #FFFFFF;
+    --surface-2: #F4F2F7;
+    --text: #1B1A20;
+    --muted: #5E5B69;
+    --faint: #8C8897;
+    --border: #E5E2EB;
+    --accent: #D92C69;
+    --code-bg: #F1EEF5;
+    --pill: #1E1D24;
+    --note-bg: #F3F0FF;
+    --note-border: #7B5CFF;
+    --warn-bg: #FFF3EE;
+    --warn-border: #FF6B4A;
+    --tip-bg: #EEF8F2;
+    --tip-border: #2E9E62;
+    --shadow: 0 1px 2px rgba(20, 16, 40, .05), 0 6px 24px rgba(20, 16, 40, .06);
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #111015;
+      --surface: #19181F;
+      --surface-2: #211F28;
+      --text: #ECEAF2;
+      --muted: #A7A3B3;
+      --faint: #7D7989;
+      --border: #2D2B36;
+      --accent: #FF6D9A;
+      --code-bg: #24222C;
+      --pill: #0C0B10;
+      --note-bg: #1D1A2E;
+      --warn-bg: #2A1A16;
+      --tip-bg: #14241B;
+      --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 6px 24px rgba(0, 0, 0, .3);
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #111015;
+    --surface: #19181F;
+    --surface-2: #211F28;
+    --text: #ECEAF2;
+    --muted: #A7A3B3;
+    --faint: #7D7989;
+    --border: #2D2B36;
+    --accent: #FF6D9A;
+    --code-bg: #24222C;
+    --pill: #0C0B10;
+    --note-bg: #1D1A2E;
+    --warn-bg: #2A1A16;
+    --tip-bg: #14241B;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 6px 24px rgba(0, 0, 0, .3);
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 24px; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent); text-underline-offset: 2px; }
+  a:hover { text-decoration-thickness: 2px; }
+
+  /* ---------- Layout ---------- */
+  .layout {
+    display: grid;
+    grid-template-columns: 270px minmax(0, 1fr);
+    max-width: 1240px;
+    margin: 0 auto;
+  }
+  nav.toc {
+    position: sticky;
+    top: 0;
+    align-self: start;
+    height: 100vh;
+    overflow-y: auto;
+    padding: 28px 18px 40px 24px;
+    border-right: 1px solid var(--border);
+  }
+  main {
+    padding: 0 48px 96px;
+    min-width: 0;
+  }
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; }
+    nav.toc {
+      position: static;
+      height: auto;
+      border-right: 0;
+      border-bottom: 1px solid var(--border);
+      padding: 16px;
+    }
+    nav.toc ol { columns: 2; column-gap: 20px; }
+    main { padding: 0 16px 72px; }
+  }
+  @media (max-width: 520px) {
+    nav.toc ol { columns: 1; }
+  }
+
+  /* ---------- Table of contents ---------- */
+  .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; text-decoration: none; color: var(--text); }
+  .brand strong { font: 700 20px/1 "SF Pro Rounded", ui-rounded, -apple-system, sans-serif; letter-spacing: -.01em; }
+  .platforms { display: inline-block; margin: -8px 0 18px; font-size: 13px; color: var(--muted); text-decoration: none; }
+  .platforms:hover { color: var(--accent); }
+  nav.toc h2 { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--faint); margin: 0 0 8px; }
+  nav.toc ol { list-style: none; margin: 0; padding: 0; counter-reset: toc; }
+  nav.toc li { counter-increment: toc; break-inside: avoid; }
+  nav.toc ol a {
+    display: block;
+    padding: 5px 8px;
+    border-radius: 7px;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 14px;
+    line-height: 1.35;
+  }
+  nav.toc ol a::before { content: counter(toc) ". "; color: var(--faint); }
+  nav.toc ol a:hover { background: var(--surface-2); color: var(--text); }
+  .theme-toggle {
+    margin-top: 18px;
+    font: inherit;
+    font-size: 13px;
+    color: var(--muted);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 5px 12px;
+    cursor: pointer;
+  }
+  @media (max-width: 900px) { .theme-toggle { margin-top: 10px; } }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    position: relative;
+    margin: 0 -48px 8px;
+    padding: 64px 48px 48px;
+    overflow: hidden;
+    border-bottom: 1px solid var(--border);
+  }
+  .hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--sunrise-diag);
+    opacity: .14;
+    mask-image: linear-gradient(to bottom, #000, transparent);
+    -webkit-mask-image: linear-gradient(to bottom, #000, transparent);
+  }
+  .hero > * { position: relative; }
+  .hero h1 {
+    font: 800 clamp(34px, 6vw, 52px)/1.05 "SF Pro Rounded", ui-rounded, -apple-system, sans-serif;
+    letter-spacing: -.025em;
+    margin: 18px 0 12px;
+  }
+  .hero p.lede { font-size: 19px; color: var(--muted); max-width: 640px; margin: 0 0 24px; }
+  .hero-meta { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    font-size: 13px;
+    padding: 4px 11px;
+    border-radius: 999px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--muted);
+  }
+  @media (max-width: 900px) { .hero { margin: 0 -16px 8px; padding: 40px 16px 32px; } }
+
+  /* ---------- Sections & type ---------- */
+  section { padding-top: 44px; }
+  section + section { border-top: 1px solid var(--border); margin-top: 44px; }
+  h2.sec {
+    font: 750 30px/1.15 "SF Pro Rounded", ui-rounded, -apple-system, sans-serif;
+    letter-spacing: -.015em;
+    margin: 0 0 6px;
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+  h2.sec .num {
+    font-size: 15px;
+    font-weight: 700;
+    color: #fff;
+    background: var(--sunrise-diag);
+    border-radius: 8px;
+    padding: 2px 9px;
+    transform: translateY(-4px);
+  }
+  .sec-intro { color: var(--muted); font-size: 17px; margin: 0 0 20px; max-width: 760px; }
+  h3 { font-size: 20px; margin: 34px 0 10px; letter-spacing: -.01em; }
+  h4 { font-size: 16px; margin: 22px 0 6px; }
+  p, li { max-width: 780px; }
+  ul, ol { padding-left: 22px; }
+  li { margin: 4px 0; }
+  li > ul, li > ol { margin: 4px 0; }
+  strong { font-weight: 650; }
+  hr { border: 0; border-top: 1px solid var(--border); margin: 28px 0; }
+
+  code {
+    font: 13.5px/1.4 ui-monospace, "SF Mono", Menlo, monospace;
+    background: var(--code-bg);
+    padding: 1px 6px;
+    border-radius: 5px;
+    word-break: break-word;
+  }
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    overflow-x: auto;
+    max-width: 780px;
+  }
+  pre code { background: none; padding: 0; font-size: 13.5px; word-break: normal; }
+  kbd {
+    display: inline-block;
+    font: 600 12.5px/1 -apple-system, sans-serif;
+    padding: 4px 7px 3px;
+    border-radius: 6px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-bottom-width: 2px;
+    color: var(--text);
+    white-space: nowrap;
+    vertical-align: 1px;
+  }
+  .ui { font-weight: 600; color: var(--text); }
+  .path { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: .9em; }
+
+  /* ---------- Callouts ---------- */
+  .callout {
+    max-width: 780px;
+    border-left: 4px solid var(--note-border);
+    background: var(--note-bg);
+    border-radius: 0 10px 10px 0;
+    padding: 12px 16px;
+    margin: 18px 0;
+  }
+  .callout p { margin: 4px 0; }
+  .callout .label { font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+  .callout.warn { border-color: var(--warn-border); background: var(--warn-bg); }
+  .callout.tip { border-color: var(--tip-border); background: var(--tip-bg); }
+
+  /* ---------- Cards ---------- */
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin: 20px 0; }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px 18px;
+    box-shadow: var(--shadow);
+  }
+  .card h4 { margin: 0 0 4px; }
+  .card p { margin: 0; color: var(--muted); font-size: 14.5px; }
+  .card .icon { font-size: 22px; margin-bottom: 6px; }
+
+  /* ---------- Steps ---------- */
+  ol.steps { list-style: none; padding: 0; counter-reset: step; max-width: 800px; }
+  ol.steps > li {
+    counter-increment: step;
+    position: relative;
+    padding: 2px 0 14px 46px;
+    margin: 0;
+  }
+  ol.steps > li::before {
+    content: counter(step);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--sunrise-diag);
+    color: #fff;
+    font-weight: 700;
+    font-size: 14px;
+    display: grid;
+    place-items: center;
+  }
+  ol.steps > li:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    left: 14.5px;
+    top: 34px;
+    bottom: 4px;
+    width: 1px;
+    background: var(--border);
+  }
+
+  /* ---------- Tables ---------- */
+  .table-wrap { overflow-x: auto; margin: 16px 0; max-width: 820px; border: 1px solid var(--border); border-radius: 12px; }
+  table { border-collapse: collapse; width: 100%; font-size: 14.5px; background: var(--surface); }
+  th, td { text-align: left; padding: 10px 14px; vertical-align: top; border-bottom: 1px solid var(--border); }
+  tr:last-child td { border-bottom: 0; }
+  th { background: var(--surface-2); font-size: 12.5px; letter-spacing: .03em; text-transform: uppercase; color: var(--muted); font-weight: 650; }
+  td code { white-space: nowrap; }
+
+  /* ---------- Pill mock-ups ---------- */
+  .pill-demo { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; margin: 18px 0; }
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 36px;
+    min-width: 120px;
+    padding: 0 16px;
+    border-radius: 999px;
+    background: var(--pill);
+    border: 1px solid rgba(255, 255, 255, .12);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, .25);
+    color: #fff;
+    font: 600 12.5px/1 "SF Pro Rounded", ui-rounded, -apple-system, sans-serif;
+  }
+  .bars { display: inline-flex; gap: 3px; align-items: center; height: 26px; }
+  .bars i {
+    display: block;
+    width: 3.5px;
+    border-radius: 2px;
+    background: var(--sunrise);
+    background-size: 92px 100%;
+    animation: bounce 1.1s ease-in-out infinite;
+  }
+  .bars i:nth-child(1) { height: 30%; background-position: 0 0; animation-delay: -.9s; }
+  .bars i:nth-child(2) { height: 55%; background-position: -6.5px 0; animation-delay: -.7s; }
+  .bars i:nth-child(3) { height: 40%; background-position: -13px 0; animation-delay: -.5s; }
+  .bars i:nth-child(4) { height: 75%; background-position: -19.5px 0; animation-delay: -.3s; }
+  .bars i:nth-child(5) { height: 95%; background-position: -26px 0; animation-delay: -.1s; }
+  .bars i:nth-child(6) { height: 70%; background-position: -32.5px 0; animation-delay: -.2s; }
+  .bars i:nth-child(7) { height: 100%; background-position: -39px 0; animation-delay: -.4s; }
+  .bars i:nth-child(8) { height: 65%; background-position: -45.5px 0; animation-delay: -.6s; }
+  .bars i:nth-child(9) { height: 85%; background-position: -52px 0; animation-delay: -.8s; }
+  .bars i:nth-child(10) { height: 50%; background-position: -58.5px 0; animation-delay: -1s; }
+  .bars i:nth-child(11) { height: 35%; background-position: -65px 0; animation-delay: -.15s; }
+  @keyframes bounce { 50% { transform: scaleY(.45); } }
+  .dots { display: inline-flex; gap: 6px; }
+  .dots i { width: 7px; height: 7px; border-radius: 50%; animation: pulse 1s ease-in-out infinite; }
+  .dots i:nth-child(1) { background: var(--coral); }
+  .dots i:nth-child(2) { background: var(--pink); animation-delay: .15s; }
+  .dots i:nth-child(3) { background: var(--violet); animation-delay: .3s; }
+  @keyframes pulse { 50% { opacity: .35; transform: scale(.75); } }
+  .spark { background: var(--sunrise); -webkit-background-clip: text; background-clip: text; color: transparent; font-size: 15px; }
+  .pill-caption { font-size: 13px; color: var(--muted); }
+  .pill-item { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  @media (prefers-reduced-motion: reduce) { .bars i, .dots i { animation: none; } }
+
+  /* ---------- Menu mock-up ---------- */
+  .menu-mock {
+    max-width: 380px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    padding: 6px;
+    font-size: 14px;
+    margin: 18px 0;
+  }
+  .menu-mock div { padding: 5px 12px; border-radius: 6px; display: flex; justify-content: space-between; gap: 16px; }
+  .menu-mock .dim { color: var(--faint); }
+  .menu-mock .sep { height: 1px; padding: 0; margin: 5px 8px; background: var(--border); }
+  .menu-mock .sc { color: var(--faint); }
+
+  /* ---------- Misc ---------- */
+  details {
+    max-width: 800px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--surface);
+    margin: 10px 0;
+  }
+  summary {
+    cursor: pointer;
+    padding: 12px 16px;
+    font-weight: 600;
+    list-style: none;
+  }
+  summary::-webkit-details-marker { display: none; }
+  summary::before { content: "›"; display: inline-block; width: 18px; color: var(--accent); font-weight: 800; transition: transform .15s; }
+  details[open] summary::before { transform: rotate(90deg); }
+  details > div { padding: 0 16px 12px 34px; }
+  details > div > p:first-child { margin-top: 0; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 820px; }
+  @media (max-width: 700px) { .two-col { grid-template-columns: 1fr; } }
+  footer { margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--border); color: var(--faint); font-size: 13px; }
+  .back { font-size: 13px; color: var(--faint); text-decoration: none; display: inline-block; margin-top: 18px; }
+</style>
+</head>
+<body>
+<div class="layout">
+
+<!-- ================= Table of contents ================= -->
+<nav class="toc" aria-label="Contents">
+  <a class="brand" href="#top">
+    <svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true">
+      <defs><linearGradient id="g1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF6B4A"/><stop offset=".5" stop-color="#FF3D7F"/><stop offset="1" stop-color="#7B5CFF"/></linearGradient></defs>
+      <rect width="64" height="64" rx="15" fill="url(#g1)"/>
+      <g fill="#fff"><rect x="11.5" y="27" width="5" height="10" rx="2.5"/><rect x="20.5" y="22" width="5" height="20" rx="2.5"/><rect x="29.5" y="17" width="5" height="30" rx="2.5"/><rect x="38.5" y="22" width="5" height="20" rx="2.5"/><rect x="47.5" y="27" width="5" height="10" rx="2.5"/></g>
+    </svg>
+    <strong>Say It Guide</strong>
+  </a>
+  <a class="platforms" href="../">&larr; All platforms</a>
+  <h2>Contents</h2>
+  <ol>
+    <li><a href="#overview">What Say It is</a></li>
+    <li><a href="#requirements">Requirements</a></li>
+    <li><a href="#install">Installing</a></li>
+    <li><a href="#first-launch">First launch &amp; setup</a></li>
+    <li><a href="#menu-bar">The menu bar icon</a></li>
+    <li><a href="#dictating">Dictating</a></li>
+    <li><a href="#pill">The recording pill</a></li>
+    <li><a href="#punctuation">Spoken punctuation</a></li>
+    <li><a href="#engines">Speech engines</a></li>
+    <li><a href="#dictionary">Personal dictionary</a></li>
+    <li><a href="#history">History</a></li>
+    <li><a href="#polish">AI Polish</a></li>
+    <li><a href="#command">Command mode</a></li>
+    <li><a href="#settings">Settings reference</a></li>
+    <li><a href="#updates">Updates</a></li>
+    <li><a href="#privacy">Privacy &amp; your data</a></li>
+    <li><a href="#troubleshooting">Troubleshooting</a></li>
+    <li><a href="#uninstall">Uninstalling</a></li>
+    <li><a href="#shortcuts">Quick reference</a></li>
+    <li><a href="#faq">FAQ</a></li>
+  </ol>
+  <button class="theme-toggle" type="button" id="themeToggle">Toggle light / dark</button>
+</nav>
+
+<main id="top">
+
+<!-- ================= Hero ================= -->
+<header class="hero">
+  <svg width="64" height="64" viewBox="0 0 64 64" aria-hidden="true">
+    <defs><linearGradient id="g2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF6B4A"/><stop offset=".5" stop-color="#FF3D7F"/><stop offset="1" stop-color="#7B5CFF"/></linearGradient></defs>
+    <rect width="64" height="64" rx="15" fill="url(#g2)"/>
+    <g fill="#fff"><rect x="11.5" y="27" width="5" height="10" rx="2.5"/><rect x="20.5" y="22" width="5" height="20" rx="2.5"/><rect x="29.5" y="17" width="5" height="30" rx="2.5"/><rect x="38.5" y="22" width="5" height="20" rx="2.5"/><rect x="47.5" y="27" width="5" height="10" rx="2.5"/></g>
+  </svg>
+  <h1>Say It for Mac<br>Installation &amp; User Guide</h1>
+  <p class="lede">Hold a key, speak, let go — your words appear wherever your cursor is. This guide covers everything from installing Say It to its most advanced features.</p>
+  <div class="hero-meta">
+    <span class="chip">Version <span data-version>1.0</span></span>
+    <span class="chip">macOS 26 · Apple Silicon</span>
+    <span class="chip">Private by default</span>
+  </div>
+</header>
+
+<!-- ================= 1. Overview ================= -->
+<section id="overview">
+  <h2 class="sec"><span class="num">1</span>What Say It is</h2>
+  <p class="sec-intro">Say It is a push-to-talk dictation app that lives in your Mac's menu bar. It turns speech into text in <em>any</em> app — Mail, Slack, Notes, a browser, a terminal — without switching windows.</p>
+
+  <div class="cards">
+    <div class="card"><div class="icon">🎙️</div><h4>Push to talk</h4><p>Hold <kbd>Right ⌥</kbd>, speak, release. The text is typed into the app you're using.</p></div>
+    <div class="card"><div class="icon">🔒</div><h4>On-device</h4><p>Transcription runs entirely on your Mac. Nothing you say is uploaded unless you turn on the optional AI features.</p></div>
+    <div class="card"><div class="icon">⚡</div><h4>Fast</h4><p>Text typically appears a fraction of a second after you let go of the key.</p></div>
+    <div class="card"><div class="icon">✍️</div><h4>Clean text</h4><p>Say “comma”, “period”, “new line”. Fillers like “um” and “uh” disappear automatically.</p></div>
+    <div class="card"><div class="icon">📖</div><h4>Learns your words</h4><p>A personal dictionary for names and jargon — and it can learn from your corrections.</p></div>
+    <div class="card"><div class="icon">✨</div><h4>Optional AI</h4><p>AI Polish tidies grammar to suit each app. Command mode rewrites selected text by voice.</p></div>
+  </div>
+</section>
+
+<!-- ================= 2. Requirements ================= -->
+<section id="requirements">
+  <h2 class="sec"><span class="num">2</span>Requirements</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Item</th><th>Requirement</th><th>Notes</th></tr>
+    <tr><td>Mac</td><td>Apple Silicon (M1 or later)</td><td>Transcription runs on the Neural Engine.</td></tr>
+    <tr><td>macOS</td><td>macOS 26 or later</td><td>Say It will not open on earlier versions.</td></tr>
+    <tr><td>Disk space</td><td>About 1 GB</td><td>The app is about 13 MB; the speech model downloaded on first launch is ~0.5 GB.</td></tr>
+    <tr><td>Internet</td><td>Needed once</td><td>To download the speech model on first launch. Dictation works offline afterwards. AI Polish and command mode need a connection.</td></tr>
+    <tr><td>Microphone</td><td>Any</td><td>Built-in and wired mics give the best accuracy. Bluetooth headsets work but switch to a lower-quality audio mode while recording.</td></tr>
+    <tr><td>Anthropic API key</td><td>Optional</td><td>Only for <a href="#polish">AI Polish</a> and <a href="#command">command mode</a>.</td></tr>
+  </table></div>
+</section>
+
+<!-- ================= 3. Installing ================= -->
+<section id="install">
+  <h2 class="sec"><span class="num">3</span>Installing Say It</h2>
+  <p class="sec-intro">Say It is signed with a Developer ID and notarized by Apple, so it installs like any app from a trusted developer — no security warnings to bypass.</p>
+
+  <ol class="steps">
+    <li>
+      <strong>Download the installer.</strong><br>
+      Go to <a href="https://github.com/bobrauck-ops/say-it-releases/releases/latest">github.com/bobrauck-ops/say-it-releases/releases/latest</a> and click <span class="ui">Say-It-&lt;version&gt;.dmg</span> under <span class="ui">Assets</span>. It saves to your <span class="ui">Downloads</span> folder.
+    </li>
+    <li>
+      <strong>Open the disk image.</strong><br>
+      Double-click the <code>.dmg</code> file. A window opens showing <span class="ui">Say It</span> and a shortcut to your <span class="ui">Applications</span> folder.
+    </li>
+    <li>
+      <strong>Drag Say It into Applications.</strong><br>
+      Drag the <span class="ui">Say It</span> icon onto the <span class="ui">Applications</span> shortcut. If you're updating manually and macOS asks, choose <span class="ui">Replace</span>.
+    </li>
+    <li>
+      <strong>Eject the disk image.</strong><br>
+      In Finder's sidebar, click the eject button next to <span class="ui">Say It</span>, or drag the disk to the Trash. You can delete the <code>.dmg</code> from Downloads afterwards.
+    </li>
+    <li>
+      <strong>Open Say It.</strong><br>
+      Open it from <span class="ui">Applications</span>, Launchpad, or Spotlight (<kbd>⌘</kbd> <kbd>Space</kbd>, type “Say It”, press <kbd>Return</kbd>). The first time, macOS may say it was downloaded from the internet — click <span class="ui">Open</span>.
+    </li>
+  </ol>
+
+  <div class="callout tip">
+    <p class="label">Good to know</p>
+    <p>Say It has no Dock icon and no main window — it's a menu bar app. After launching, look for its icon near the clock at the top right of your screen (see <a href="#menu-bar">The menu bar icon</a>).</p>
+  </div>
+</section>
+
+<!-- ================= 4. First launch ================= -->
+<section id="first-launch">
+  <h2 class="sec"><span class="num">4</span>First launch &amp; setup</h2>
+  <p class="sec-intro">The first time Say It opens, a <span class="ui">Welcome to Say It</span> window walks you through four short steps. It takes about two minutes (plus the speech-model download).</p>
+
+  <h3>Step 1 — Welcome</h3>
+  <p>Shows your dictation key (<kbd>Right ⌥</kbd> by default) and the basic idea: <em>hold, speak, release</em>. Click <span class="ui">Get Started</span>.</p>
+
+  <h3>Step 2 — Setup</h3>
+  <p>Three items, each turning into a green checkmark when ready. <span class="ui">Continue</span> unlocks once all three are done.</p>
+  <div class="table-wrap"><table>
+    <tr><th>Item</th><th>Why it's needed</th><th>What to do</th></tr>
+    <tr>
+      <td><strong>Microphone</strong></td>
+      <td>To hear you while you hold the key. Say It only listens while the key is held.</td>
+      <td>Click <span class="ui">Allow</span>, then <span class="ui">Allow</span> in the macOS dialog.</td>
+    </tr>
+    <tr>
+      <td><strong>Accessibility</strong></td>
+      <td>To notice the dictation key in other apps and to type the text for you.</td>
+      <td>Click <span class="ui">Open Settings</span>. In <span class="ui">System Settings → Privacy &amp; Security → Accessibility</span>, switch on <span class="ui">Say It</span> (enter your Mac password if asked), then return to the welcome window. It notices automatically within a second.</td>
+    </tr>
+    <tr>
+      <td><strong>Speech model</strong></td>
+      <td>The on-device engine that turns speech into text.</td>
+      <td>Nothing — it downloads (~0.5 GB) and optimizes itself for your Mac in the background. Usually under a minute on a fast connection.</td>
+    </tr>
+  </table></div>
+
+  <div class="callout">
+    <p class="label">Why Accessibility?</p>
+    <p>macOS requires it for any app that watches for a key press while you're in another app, or that types text on your behalf. Say It uses it only for those two things, plus reading the text field after a dictation if <a href="#learning">learning from corrections</a> is on.</p>
+  </div>
+
+  <h3>Step 3 — Try it out</h3>
+  <p>A practice area. Hold your dictation key and say the line shown:</p>
+  <pre><code>Hello Say It comma this is my first dictation period</code></pre>
+  <p>Release the key. Your words appear in the window — with “comma” and “period” turned into punctuation. The box outline lights up in the Say It colors while it's listening. Click <span class="ui">Continue</span> (or <span class="ui">Skip</span>).</p>
+
+  <h3>Step 4 — You're all set</h3>
+  <p>A cheat sheet of spoken punctuation. Click <span class="ui">Start Dictating</span> to close the window. You can reopen it any time from the menu bar icon → <span class="ui">Welcome Guide…</span>.</p>
+</section>
+
+<!-- ================= 5. Menu bar ================= -->
+<section id="menu-bar">
+  <h2 class="sec"><span class="num">5</span>The menu bar icon</h2>
+  <p class="sec-intro">Everything in Say It is reached from its icon in the menu bar — five vertical bars, like a small sound wave.</p>
+
+  <div class="table-wrap"><table>
+    <tr><th>Icon</th><th>Meaning</th></tr>
+    <tr><td>Five bars</td><td>Ready — hold your key to dictate.</td></tr>
+    <tr><td>Microphone</td><td>Recording.</td></tr>
+    <tr><td>Three dots</td><td>Transcribing (and polishing, if AI Polish is on).</td></tr>
+    <tr><td>Hourglass</td><td>Preparing the speech model (just after launch or after switching engines).</td></tr>
+  </table></div>
+
+  <h3>The menu</h3>
+  <p>Click the icon to open it:</p>
+  <div class="menu-mock" role="img" aria-label="Say It menu">
+    <div class="dim">Say It — Ready</div>
+    <div class="dim">Hold Right ⌥ to dictate</div>
+    <div class="sep"></div>
+    <div>Copy Recent <span class="sc">▸</span></div>
+    <div>History… <span class="sc">⌘Y</span></div>
+    <div class="sep"></div>
+    <div>Welcome Guide…</div>
+    <div>Settings… <span class="sc">⌘,</span></div>
+    <div>Check for Updates…</div>
+    <div class="sep"></div>
+    <div class="dim">Version <span data-version-full>1.0.0</span></div>
+    <div>Quit Say It <span class="sc">⌘Q</span></div>
+  </div>
+  <ul>
+    <li><strong>Status line</strong> — what Say It is doing right now. If something went wrong, a ⚠︎ line explains it.</li>
+    <li><strong>Copy Recent</strong> — your last five dictations; click one to copy it to the clipboard.</li>
+    <li><strong>History…</strong> — the full, searchable <a href="#history">history window</a>.</li>
+    <li><strong>Grant Microphone / Accessibility Access…</strong> — appear only if a permission is missing.</li>
+    <li><strong>Welcome Guide…</strong> — reopens the first-launch walkthrough.</li>
+    <li><strong>Settings…</strong> — all <a href="#settings">settings</a>.</li>
+    <li><strong>Check for Updates…</strong> — see <a href="#updates">Updates</a>.</li>
+  </ul>
+  <p>The keyboard shortcuts shown in the menu work while the menu is open.</p>
+
+  <div class="callout warn">
+    <p class="label">Can't see the icon?</p>
+    <p>On MacBooks with a camera notch, macOS hides menu bar icons that don't fit beside the notch. Quit one or two other menu bar apps, or hold <kbd>⌘</kbd> and drag other icons further left to make room. On macOS 26 you can also check <span class="ui">System Settings → Menu Bar</span> to make sure Say It is allowed to show.</p>
+  </div>
+</section>
+
+<!-- ================= 6. Dictating ================= -->
+<section id="dictating">
+  <h2 class="sec"><span class="num">6</span>Dictating</h2>
+  <p class="sec-intro">The core of Say It: three motions, in any app.</p>
+
+  <ol class="steps">
+    <li><strong>Click where you want the text</strong> — a message box, document, email, search field, terminal…</li>
+    <li><strong>Hold the dictation key</strong> (<kbd>Right ⌥</kbd> — the Option key to the right of the space bar). You'll hear a soft click and the recording pill appears at the bottom of the screen.</li>
+    <li><strong>Speak naturally.</strong> Say punctuation where you want it (“comma”, “period”, “new line”). The pill's waveform moves with your voice.</li>
+    <li><strong>Release the key.</strong> A soft pop, the pill shows three dots for a moment, and your text is typed at the cursor.</li>
+  </ol>
+
+  <h3>How the text is inserted</h3>
+  <p>Say It places the text on the clipboard, presses <kbd>⌘</kbd><kbd>V</kbd> for you, then restores whatever was on your clipboard before — so your clipboard is left as it was. If text was selected, the dictation replaces it, just as typing would.</p>
+
+  <h3>Tips for the best accuracy</h3>
+  <ul>
+    <li>Start speaking just <em>after</em> pressing the key, and release just <em>after</em> your last word.</li>
+    <li>Speak at a normal pace and volume; there's no need to over-enunciate.</li>
+    <li>Use a built-in or wired microphone if you can. AirPods and other Bluetooth headsets drop to a lower-quality mode while recording.</li>
+    <li>Dictate in sentences or short paragraphs rather than single words — context helps the engine.</li>
+    <li>Add names and jargon to your <a href="#dictionary">personal dictionary</a>.</li>
+  </ul>
+
+  <h3>Things that are ignored or cancelled</h3>
+  <ul>
+    <li><strong>Very short taps</strong> (under a quarter of a second) are treated as accidental and discarded.</li>
+    <li><strong>Pressing any other key</strong> while holding the dictation key cancels the recording — so using the key as part of a normal shortcut never starts a dictation.</li>
+    <li><strong>Silence</strong> produces nothing; the pill says <span class="ui">Didn't catch that</span>.</li>
+  </ul>
+
+  <h3>Changing the dictation key</h3>
+  <p>In <span class="ui">Settings → General → Hold to dictate</span> you can choose <span class="ui">Right Option ⌥</span>, <span class="ui">Right Command ⌘</span>, <span class="ui">Right Control ⌃</span> or <span class="ui">Fn / Globe 🌐</span>. The left-hand versions of these keys keep working normally.</p>
+
+  <div class="callout">
+    <p class="label">Using Fn / Globe</p>
+    <p>macOS also uses the 🌐 key for the emoji picker, switching input sources or its own dictation. To avoid both happening, open <span class="ui">System Settings → Keyboard</span> and set <span class="ui">Press 🌐 key to</span> → <span class="ui">Do Nothing</span>. Say It shows a reminder with a button to that setting if needed.</p>
+  </div>
+</section>
+
+<!-- ================= 7. Pill ================= -->
+<section id="pill">
+  <h2 class="sec"><span class="num">7</span>The recording pill</h2>
+  <p class="sec-intro">A small capsule just above the Dock shows what's happening. It never takes focus away from your app, clicks pass straight through it, and it appears on whichever screen your mouse is on — including over full-screen apps.</p>
+
+  <div class="pill-demo">
+    <div class="pill-item"><span class="pill"><span class="bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></span><span class="pill-caption">Listening (dictation)</span></div>
+    <div class="pill-item"><span class="pill"><span class="spark">✦</span><span class="bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></span><span class="pill-caption">Listening (command mode)</span></div>
+    <div class="pill-item"><span class="pill"><span class="dots"><i></i><i></i><i></i></span></span><span class="pill-caption">Working</span></div>
+  </div>
+
+  <h3>Messages the pill can show</h3>
+  <p>If something needs your attention, the pill widens to show a short message for a few seconds:</p>
+  <div class="table-wrap"><table>
+    <tr><th>Message</th><th>What it means</th><th>What to do</th></tr>
+    <tr><td><span class="ui">Copied — press ⌘V to paste</span></td><td>Say It couldn't type the text (usually Accessibility is off), so it put it on the clipboard instead.</td><td>Press <kbd>⌘</kbd><kbd>V</kbd> to paste it. Turn Accessibility back on (macOS shows a prompt).</td></tr>
+    <tr><td><span class="ui">Didn't catch that</span></td><td>Nothing intelligible was heard.</td><td>Hold the key a little longer; check your microphone choice.</td></tr>
+    <tr><td><span class="ui">Couldn't transcribe — try again</span></td><td>The speech engine hit an error.</td><td>Try again. If it repeats, see <a href="#troubleshooting">Troubleshooting</a>.</td></tr>
+    <tr><td><span class="ui">Microphone access needed</span></td><td>Say It isn't allowed to use the microphone.</td><td>Enable it in <span class="ui">System Settings → Privacy &amp; Security → Microphone</span>.</td></tr>
+    <tr><td><span class="ui">Inserted without polish — check API key</span></td><td>AI Polish is on but your API key is missing or rejected; your text was typed unpolished.</td><td>Check the key in <span class="ui">Settings → AI Polish</span>.</td></tr>
+    <tr><td><span class="ui">Command mode needs an API key — see Settings</span></td><td>Command mode requires an Anthropic API key.</td><td>Add one in <span class="ui">Settings → AI Polish</span>.</td></tr>
+    <tr><td><span class="ui">Select some text first</span></td><td>Command mode found no selected text.</td><td>Select the text to change, then hold the command key.</td></tr>
+    <tr><td><span class="ui">Selection too long for a command</span></td><td>Over about 20,000 characters were selected.</td><td>Select a smaller section.</td></tr>
+    <tr><td><span class="ui">No change — try rephrasing</span></td><td>The command left the text as it was (for example, you asked a question about it).</td><td>Phrase it as an instruction: “make this…”, “turn this into…”.</td></tr>
+    <tr><td><span class="ui">Command didn't work — text unchanged</span></td><td>The AI request failed or timed out. Your text wasn't touched.</td><td>Check your internet connection and try again.</td></tr>
+  </table></div>
+</section>
+
+<!-- ================= 8. Punctuation ================= -->
+<section id="punctuation">
+  <h2 class="sec"><span class="num">8</span>Spoken punctuation &amp; cleanup</h2>
+  <p class="sec-intro">The speech engines already add natural punctuation. On top of that, Say It understands spoken punctuation commands and removes filler words. This is the <span class="ui">Clean up dictation</span> setting (on by default).</p>
+
+  <h3>Punctuation you can say</h3>
+  <div class="table-wrap"><table>
+    <tr><th>Say</th><th>You get</th><th>Example</th></tr>
+    <tr><td>“period” or “full stop”</td><td><code>.</code></td><td>“It works period” → <em>It works.</em></td></tr>
+    <tr><td>“comma”</td><td><code>,</code></td><td>“Hello comma Sam” → <em>Hello, Sam</em></td></tr>
+    <tr><td>“question mark”</td><td><code>?</code></td><td>“Are you free question mark” → <em>Are you free?</em></td></tr>
+    <tr><td>“exclamation point” or “exclamation mark”</td><td><code>!</code></td><td>“That's amazing exclamation point” → <em>That's amazing!</em></td></tr>
+    <tr><td>“colon”</td><td><code>:</code></td><td>“Three things colon…” → <em>Three things: …</em></td></tr>
+    <tr><td>“semicolon”</td><td><code>;</code></td><td>“First part semicolon second part” → <em>First part; second part</em></td></tr>
+    <tr><td>“new line”</td><td>a line break</td><td>“Buy milk new line buy eggs” → two lines</td></tr>
+    <tr><td>“new paragraph”</td><td>a blank line</td><td>“Dear Sam comma new paragraph thanks…”</td></tr>
+  </table></div>
+
+  <h3>When the words stay words</h3>
+  <p>Say It only converts these words when they're clearly commands:</p>
+  <ul>
+    <li><strong>After words like “the”, “a”, “this”, “that”, “my”, “our”…</strong> they stay as words: <em>“the trial period ends Friday”</em>, <em>“a new line of products”</em>, <em>“the colon”</em>.</li>
+    <li><strong>“period” after common qualifiers</strong> stays a word: <em>trial period, grace period, waiting period, notice period, billing period…</em></li>
+    <li><strong>At the very start of a dictation</strong>, punctuation words stay as words (“Full stop at the end…”). “New line” and “new paragraph” still work there.</li>
+    <li><strong>Numbers and web addresses</strong> such as <em>3.5</em> or <em>example.com</em> are never altered.</li>
+  </ul>
+
+  <h3>Automatic cleanup</h3>
+  <ul>
+    <li><strong>Fillers removed:</strong> “um”, “uh”, “uhm”, “erm”, “hmm” — along with any commas around them. <em>“I think, um, we should”</em> → <em>“I think we should”</em>.</li>
+    <li><strong>Doubled punctuation merged:</strong> if the engine already added a comma before your spoken “period”, you get just the period.</li>
+    <li><strong>Capitalization:</strong> the first letter of the dictation, of each sentence, and of each new line is capitalized.</li>
+  </ul>
+  <p>To get exactly what the engine heard with none of this processing, turn off <span class="ui">Settings → Transcription → Clean up dictation</span>.</p>
+</section>
+
+<!-- ================= 9. Engines ================= -->
+<section id="engines">
+  <h2 class="sec"><span class="num">9</span>Speech engines</h2>
+  <p class="sec-intro">Say It includes two speech-to-text engines. Both run entirely on your Mac. Switch in <span class="ui">Settings → Transcription → Engine</span>.</p>
+
+  <div class="two-col">
+    <div class="card">
+      <h4>Parakeet <span class="chip">default</span></h4>
+      <p>An open speech model from NVIDIA, running on your Mac's Neural Engine. The most accurate option for everyday English. Downloads once (~0.5 GB) on first use. Text appears in about a tenth of a second after release.</p>
+    </div>
+    <div class="card">
+      <h4>Apple</h4>
+      <p>The speech engine built into macOS 26. No separate download beyond the language files macOS manages itself. Very fast; also benefits from your dictionary as vocabulary hints.</p>
+    </div>
+  </div>
+
+  <ul>
+    <li>Switching engines takes a few seconds while the new one loads (the menu icon shows an hourglass). If you switch mid-dictation, the change applies once that dictation finishes.</li>
+    <li><strong>Language:</strong> Parakeet is tuned for English. The Apple engine follows your Mac's language where macOS supports on-device recognition for it.</li>
+    <li>If one engine consistently mishears you, try the other — and add recurring problem words to your <a href="#dictionary">dictionary</a>.</li>
+  </ul>
+</section>
+
+<!-- ================= 10. Dictionary ================= -->
+<section id="dictionary">
+  <h2 class="sec"><span class="num">10</span>Personal dictionary</h2>
+  <p class="sec-intro">Teach Say It how to write names, product names and jargon it gets wrong. Open <span class="ui">Settings → Dictionary</span>.</p>
+
+  <h3>Adding words</h3>
+  <ol class="steps">
+    <li>Click <span class="ui">Add Word</span>.</li>
+    <li>In <span class="ui">Write as</span>, type the word exactly as it should appear — spelling and capitalization: <em>Siobhan</em>, <em>iPhone</em>, <em>Kubernetes</em>, <em>Wispr Flow</em>.</li>
+    <li>Optionally, in <span class="ui">Often heard as</span>, type what the engine writes instead, separated by commas: <em>shivon, chevonne</em>.</li>
+  </ol>
+  <p>Changes save automatically. Remove a word with the <span class="ui">−</span> button on its row.</p>
+
+  <div class="table-wrap"><table>
+    <tr><th>Write as</th><th>Often heard as</th><th>Effect</th></tr>
+    <tr><td>Wispr Flow</td><td>whisper flow, whisper flo</td><td>“whisper flow” → <em>Wispr Flow</em></td></tr>
+    <tr><td>iPhone</td><td><span style="color:var(--faint)">(empty)</span></td><td>Fixes casing: “iphone” / “Iphone” → <em>iPhone</em></td></tr>
+    <tr><td>Siobhan</td><td>shivon, chevonne</td><td>“Ask shivon” → <em>Ask Siobhan</em></td></tr>
+  </table></div>
+
+  <h3>How matching works</h3>
+  <ul>
+    <li><strong>Whole words only</strong> — “whisper flow” is replaced, “whispering flowers” is not.</li>
+    <li><strong>Case doesn't matter</strong> when matching; your spelling and capitalization are always used in the result.</li>
+    <li><strong>Longest match wins</strong> — “Wispr Flow Pro” beats “Wispr Flow”.</li>
+    <li><strong>Commas and hyphens</strong> the engine inserts inside a phrase (“whisper, flow”) still match.</li>
+    <li>Your dictionary is applied <em>last</em> (after punctuation cleanup and after AI Polish), so your spellings always win.</li>
+  </ul>
+
+  <h3>Catch close mishearings</h3>
+  <p>With this setting on (the default), Say It also fixes <em>near-misses</em> that sound like a dictionary word or one of its “often heard as” spellings — for example “Shivan” when you listed “shivon”.</p>
+  <div class="callout">
+    <p class="label">Real words are never replaced</p>
+    <p>Near-miss matching only touches words that macOS's spell checker doesn't recognise. “Shaven” will never turn into “Siobhan”. The trade-off: macOS knows many first names, so a mishearing that happens to be a real name may not be caught automatically — add it under “Often heard as”.</p>
+  </div>
+
+  <h3 id="learning">Learning from your corrections</h3>
+  <p>With <span class="ui">Suggest words when I correct a dictation</span> on (the default), Say It watches the text field for about a minute after each dictation. If you fix a word it typed, a card appears above the pill:</p>
+  <div class="pill-demo">
+    <span class="pill" style="height:auto;padding:12px 16px;border-radius:16px;gap:12px;justify-content:flex-start;">
+      <span style="font-size:20px">📖</span>
+      <span style="text-align:left;line-height:1.35"><span style="display:block;font-size:13px">Add “Siobhan” to your dictionary?</span><span style="display:block;font-weight:500;opacity:.65;font-size:11.5px">Say It heard “Shivan”</span></span>
+      <span style="opacity:.7;font-weight:500">Not now</span>
+      <span style="background:var(--sunrise);padding:5px 12px;border-radius:999px">Add</span>
+    </span>
+  </div>
+  <ul>
+    <li><span class="ui">Add</span> creates a dictionary entry, or adds the misheard spelling to an existing one. <span class="ui">Not now</span> dismisses it; it also fades after 10 seconds.</li>
+    <li>Clicking the card never takes focus away from the app you're typing in.</li>
+    <li>It's offered for <strong>capitalization fixes</strong> (iphone → iPhone) and fixes where <strong>either word isn't in the spell checker</strong> (Shivan → Siobhan). Swaps between two ordinary words (their → there) are treated as grammar and ignored.</li>
+    <li>It works in apps whose text macOS can read — Notes, TextEdit, Mail, Pages, Messages and most native apps. In many browsers and Electron apps (Slack, VS Code) it quietly does nothing.</li>
+  </ul>
+</section>
+
+<!-- ================= 11. History ================= -->
+<section id="history">
+  <h2 class="sec"><span class="num">11</span>History</h2>
+  <p class="sec-intro">Every dictation is saved locally so you can find and re-copy it — handy if text went into the wrong window.</p>
+
+  <h3>Quick access</h3>
+  <p>Menu bar icon → <span class="ui">Copy Recent</span> lists your last five dictations. Click one to copy it.</p>
+
+  <h3>The History window</h3>
+  <p>Menu bar icon → <span class="ui">History…</span> (<kbd>⌘</kbd><kbd>Y</kbd> while the menu is open).</p>
+  <ul>
+    <li><strong>Stats</strong> at the top: words today, words in total, and number of dictations.</li>
+    <li><strong>Grouped by day</strong> — Today, Yesterday, then dates. Each entry shows the text, the time, the app it went into (with its icon), and the word count.</li>
+    <li><strong>Search</strong> with the toolbar search field. It matches the text <em>and</em> the app name, every word must match, and accents don't matter: “budget mail” finds a Mail dictation about the budget; “cafe” finds “café”.</li>
+    <li><strong>Copy</strong> — click the copy icon on a row, or double-click the row.</li>
+    <li><strong>Delete one</strong> — right-click a row → <span class="ui">Delete</span>.</li>
+    <li><strong>Delete everything</strong> — <span class="ui">Clear All</span> in the toolbar (asks for confirmation; can't be undone).</li>
+  </ul>
+
+  <h3>Storage &amp; privacy</h3>
+  <ul>
+    <li>Keeps your latest <strong>500</strong> dictations; older ones drop off automatically.</li>
+    <li>Stored only on your Mac in <span class="path">~/Library/Application Support/Say It/history.json</span>. Never uploaded.</li>
+    <li>Practice dictations in the welcome window aren't saved.</li>
+    <li>Turn history off in <span class="ui">Settings → General → Keep dictation history</span>; clear it with <span class="ui">Clear History…</span>.</li>
+  </ul>
+</section>
+
+<!-- ================= 12. AI Polish ================= -->
+<section id="polish">
+  <h2 class="sec"><span class="num">12</span>AI Polish <span class="chip">optional</span></h2>
+  <p class="sec-intro">AI Polish sends each dictation to Anthropic's Claude to fix grammar, remove false starts, apply your self-corrections, and match the tone of the app you're in. It's <strong>off by default</strong> and needs your own Anthropic API key.</p>
+
+  <h3>What it does</h3>
+  <div class="table-wrap"><table>
+    <tr><th>You say</th><th>You get</th></tr>
+    <tr><td>“hey can you um send me the report by friday no wait thursday thanks” <em>(in Mail)</em></td><td>Hey, can you send me the report by Thursday? Thanks.</td></tr>
+    <tr><td>“for the trip we need tickets passports and a charger” <em>(in Notes)</em></td><td>For the trip, we need:<br>- Tickets<br>- Passports<br>- A charger</td></tr>
+    <tr><td>“git commit dash m fix the login bug” <em>(in Terminal)</em></td><td><code>git commit -m "fix the login bug"</code></td></tr>
+    <tr><td>“what time is the meeting tomorrow question mark”</td><td>What time is the meeting tomorrow? <em>(typed, not answered)</em></td></tr>
+  </table></div>
+
+  <h3>Setting it up</h3>
+  <ol class="steps">
+    <li><strong>Get an API key.</strong> Sign in at <a href="https://console.anthropic.com/settings/keys">console.anthropic.com</a> → <span class="ui">API Keys</span> → <span class="ui">Create Key</span>, and copy it (it starts with <code>sk-ant-</code>). API usage is billed by Anthropic separately from any Claude.ai subscription, so you may need to add a payment method or credits.</li>
+    <li><strong>Save it in Say It.</strong> <span class="ui">Settings → AI Polish</span>, paste the key, click <span class="ui">Save</span>. Say It runs a quick test — you should see a green <span class="ui">Working — “…”</span> line with a cleaned-up sample sentence.</li>
+    <li><strong>Turn it on.</strong> Switch on <span class="ui">Polish dictation with Claude</span>. (The switch stays locked until a key is saved.)</li>
+  </ol>
+
+  <h3>Styles</h3>
+  <p>With <span class="ui">Style → Match the app I'm typing in</span> (the default), Say It picks a style from the app you're dictating into:</p>
+  <div class="table-wrap"><table>
+    <tr><th>Style</th><th>Used in</th><th>Behaviour</th></tr>
+    <tr><td><strong>Email</strong></td><td>Mail, Outlook, Spark, Superhuman, Mimestream, Airmail</td><td>Complete, natural, professional sentences; new paragraphs where the topic changes.</td></tr>
+    <tr><td><strong>Chat</strong></td><td>Slack, Messages, Discord, WhatsApp, Teams, Telegram, Messenger, Zoom, Signal</td><td>Casual and concise; contractions kept; a single short sentence may drop its final period.</td></tr>
+    <tr><td><strong>Code</strong></td><td>Terminal, iTerm, Ghostty, Warp, Xcode, VS Code, Cursor, Windsurf, JetBrains IDEs, Zed, Sublime Text</td><td>File names, commands, flags and technical terms kept exactly; minimal edits; no added formatting.</td></tr>
+    <tr><td><strong>Document</strong></td><td>Notes, Pages, Word, Obsidian, Notion, TextEdit, Bear, Drafts</td><td>Clear prose; when you list several items they become a bulleted list.</td></tr>
+    <tr><td><strong>Light</strong></td><td>Everything else (including web apps in a browser)</td><td>Only grammar, punctuation, fillers and self-corrections; your wording stays the same.</td></tr>
+  </table></div>
+  <p>Choose <span class="ui">Light touch everywhere</span> to use the Light style in every app.</p>
+
+  <h3>Good to know</h3>
+  <ul>
+    <li><strong>Dictations under three words</strong> (“Sounds good.”) are typed as spoken, without polish.</li>
+    <li><strong>It adds about 0.5–1.5 seconds</strong> before the text appears; the pill shows dots meanwhile.</li>
+    <li><strong>You never lose a dictation.</strong> If polish fails, takes longer than 6 seconds, is declined, or you're offline, the unpolished text is typed instead. If the problem is your API key, the pill tells you.</li>
+    <li><strong>It edits, it doesn't answer.</strong> Questions and instructions in your dictation are typed as text — never answered or carried out.</li>
+    <li><strong>Your dictionary still wins:</strong> your words are sent along as spelling hints and re-applied afterwards.</li>
+    <li><strong>Cost:</strong> Say It uses Claude Haiku 5.5, Anthropic's fastest, lowest-cost model. A typical dictation costs a tiny fraction of a cent. Check Anthropic's pricing page for current rates; usage appears in your Anthropic Console.</li>
+  </ul>
+
+  <h3>Managing the key</h3>
+  <p>Your key is stored in your macOS Keychain, not in a file. In <span class="ui">Settings → AI Polish</span>: <span class="ui">Test</span> re-checks it, <span class="ui">Remove</span> deletes it (and turns polish off). If macOS asks whether Say It may use the key from your Keychain, choose <span class="ui">Always Allow</span>.</p>
+</section>
+
+<!-- ================= 13. Command mode ================= -->
+<section id="command">
+  <h2 class="sec"><span class="num">13</span>Command mode <span class="chip">optional</span></h2>
+  <p class="sec-intro">Rewrite text by voice. Select some text, hold the command key, say what to do — Claude's result replaces your selection.</p>
+
+  <ol class="steps">
+    <li><strong>Select text</strong> in any app.</li>
+    <li><strong>Hold <kbd>Right ⌘</kbd></strong> (the command key; configurable). The pill shows a ✦ sparkle next to the waveform so you know it's a command, not a dictation.</li>
+    <li><strong>Say an instruction</strong>, for example:
+      <ul>
+        <li>“make this friendlier” · “make this more formal” · “make this shorter”</li>
+        <li>“turn this into bullet points” · “fix the typos” · “summarize this in one sentence”</li>
+        <li>“translate to Spanish” · “rewrite this as a polite decline”</li>
+      </ul>
+    </li>
+    <li><strong>Release.</strong> After a moment the selection is replaced with the result. Don't like it? Press <kbd>⌘</kbd><kbd>Z</kbd> in the app to undo.</li>
+  </ol>
+
+  <h3>Details</h3>
+  <ul>
+    <li><strong>Requires an Anthropic API key</strong> — the same one as AI Polish (<span class="ui">Settings → AI Polish</span>). AI Polish itself doesn't need to be switched on.</li>
+    <li><strong>What's sent:</strong> your selected text and your spoken instruction (transcribed on your Mac first). Nothing else.</li>
+    <li><strong>Questions</strong> such as “what does this mean?” leave your text untouched, and the pill says <span class="ui">No change — try rephrasing</span>.</li>
+    <li><strong>Limit:</strong> about 20,000 characters of selected text.</li>
+    <li><strong>Timeout:</strong> 30 seconds. If it fails, your text is left exactly as it was.</li>
+    <li><strong>Normal shortcuts still work.</strong> Holding <kbd>Right ⌘</kbd> and pressing another key (⌘C, ⌘Tab…) cancels command mode.</li>
+    <li><strong>Change or disable</strong> the key in <span class="ui">Settings → General → Hold for command mode</span> (Off, or any key other than your dictation key).</li>
+  </ul>
+
+  <div class="callout warn">
+    <p class="label">Known quirk in code editors</p>
+    <p>Some apps (browsers, Slack, VS Code) don't share their selection with macOS directly, so Say It copies it with ⌘C and then restores your clipboard. In code editors such as VS Code, ⌘C with <em>nothing</em> selected copies the current line — so a command with no selection acts on that line and inserts the result at the cursor. Press ⌘Z to undo, and select text first.</p>
+  </div>
+</section>
+
+<!-- ================= 14. Settings ================= -->
+<section id="settings">
+  <h2 class="sec"><span class="num">14</span>Settings reference</h2>
+  <p class="sec-intro">Menu bar icon → <span class="ui">Settings…</span>. Sections are listed in the sidebar on the left. Changes apply immediately.</p>
+
+  <h3>General</h3>
+  <div class="table-wrap"><table>
+    <tr><th>Setting</th><th>Options</th><th>Default</th></tr>
+    <tr><td>Hold to dictate</td><td>Right Option ⌥, Right Command ⌘, Right Control ⌃, Fn / Globe 🌐</td><td>Right Option ⌥</td></tr>
+    <tr><td>Hold for command mode</td><td>Off, or any of the keys above except your dictation key</td><td>Right Command ⌘</td></tr>
+    <tr><td>Launch Say It at login</td><td>On / Off. macOS may ask you to approve it in <span class="ui">System Settings → General → Login Items</span>.</td><td>Off</td></tr>
+    <tr><td>Play start and stop sounds</td><td>On / Off</td><td>On</td></tr>
+    <tr><td>Keep dictation history</td><td>On / Off, plus <span class="ui">Clear History…</span></td><td>On</td></tr>
+  </table></div>
+
+  <h3>Transcription</h3>
+  <div class="table-wrap"><table>
+    <tr><th>Setting</th><th>Options</th><th>Default</th></tr>
+    <tr><td>Engine</td><td>Parakeet (most accurate) · Apple (fastest, built in)</td><td>Parakeet</td></tr>
+    <tr><td>Clean up dictation</td><td>Spoken punctuation, filler removal, capitalization</td><td>On</td></tr>
+  </table></div>
+
+  <h3>AI Polish</h3>
+  <div class="table-wrap"><table>
+    <tr><th>Setting</th><th>Options</th><th>Default</th></tr>
+    <tr><td>Polish dictation with Claude</td><td>On / Off (needs a saved API key)</td><td>Off</td></tr>
+    <tr><td>Style</td><td>Match the app I'm typing in · Light touch everywhere</td><td>Match the app</td></tr>
+    <tr><td>Anthropic API key</td><td>Save · Test · Remove</td><td>—</td></tr>
+  </table></div>
+
+  <h3>Dictionary</h3>
+  <div class="table-wrap"><table>
+    <tr><th>Setting</th><th>Options</th><th>Default</th></tr>
+    <tr><td>Catch close mishearings</td><td>On / Off</td><td>On</td></tr>
+    <tr><td>Suggest words when I correct a dictation</td><td>On / Off</td><td>On</td></tr>
+    <tr><td>Word list</td><td>Write as · Often heard as · Add Word · remove (−)</td><td>Empty</td></tr>
+  </table></div>
+
+  <h3>Microphone</h3>
+  <div class="table-wrap"><table>
+    <tr><th>Setting</th><th>Options</th><th>Default</th></tr>
+    <tr><td>Input</td><td>System default, or any connected microphone. If a chosen mic is unplugged, Say It falls back to the system default and shows it as “Disconnected device”.</td><td>System default</td></tr>
+  </table></div>
+</section>
+
+<!-- ================= 15. Updates ================= -->
+<section id="updates">
+  <h2 class="sec"><span class="num">15</span>Updates</h2>
+  <ul>
+    <li>Say It <strong>checks for updates automatically</strong> once a day. When one is available, a window shows what's new with options to install now, later, or skip that version.</li>
+    <li>Check any time: menu bar icon → <span class="ui">Check for Updates…</span>.</li>
+    <li>Updates download, verify and install themselves, then relaunch Say It. Your settings, dictionary, history and API key are kept, and permissions carry over.</li>
+    <li>Every update is cryptographically signed; Say It refuses any update that isn't signed by its developer. Updates are also notarized by Apple.</li>
+    <li>Your current version is shown near the bottom of the menu.</li>
+    <li>Release notes for every version: <a href="https://github.com/bobrauck-ops/say-it-releases/releases">github.com/bobrauck-ops/say-it-releases/releases</a>.</li>
+  </ul>
+</section>
+
+<!-- ================= 16. Privacy ================= -->
+<section id="privacy">
+  <h2 class="sec"><span class="num">16</span>Privacy &amp; your data</h2>
+
+  <div class="two-col">
+    <div class="card">
+      <h4>🔒 Stays on your Mac — always</h4>
+      <p>Your voice and audio · transcription · spoken-punctuation cleanup · your dictionary · your history · your settings · your API key (in the Keychain).</p>
+    </div>
+    <div class="card">
+      <h4>☁️ Sent to Anthropic — only if you use it</h4>
+      <p><strong>AI Polish:</strong> the text of dictations of 3+ words, the app's name and your dictionary words.<br><strong>Command mode:</strong> the selected text and your transcribed instruction.</p>
+    </div>
+  </div>
+
+  <ul>
+    <li>Audio is never saved to disk and never leaves your Mac. Say It only listens while you hold a key.</li>
+    <li>Requests to Anthropic go directly from your Mac using your own API key, under Anthropic's API terms and privacy policy.</li>
+    <li>Update checks contact GitHub to download the update feed; they send no personal data.</li>
+    <li>Say It writes diagnostic logs to the macOS system log (subsystem <code>com.robertrauck.sayit</code>). The text of your dictations is redacted in these logs.</li>
+  </ul>
+
+  <h3>Where things are stored</h3>
+  <div class="table-wrap"><table>
+    <tr><th>What</th><th>Location</th></tr>
+    <tr><td>App</td><td class="path">/Applications/Say It.app</td></tr>
+    <tr><td>Dictionary</td><td class="path">~/Library/Application Support/Say It/dictionary.json</td></tr>
+    <tr><td>History</td><td class="path">~/Library/Application Support/Say It/history.json</td></tr>
+    <tr><td>Parakeet speech model</td><td class="path">~/Library/Application Support/FluidAudio/Models/</td></tr>
+    <tr><td>Settings</td><td>macOS preferences for <code>com.robertrauck.sayit</code></td></tr>
+    <tr><td>API key</td><td>Login Keychain, item <code>com.sayit.SayIt.anthropic</code></td></tr>
+  </table></div>
+  <p>The dictionary file is plain, readable JSON — you can back it up or copy it to another Mac (quit Say It first).</p>
+</section>
+
+<!-- ================= 17. Troubleshooting ================= -->
+<section id="troubleshooting">
+  <h2 class="sec"><span class="num">17</span>Troubleshooting</h2>
+  <p class="sec-intro">Click a problem to see the fix. For anything not covered, the status line in the menu often explains what went wrong.</p>
+
+  <h3>Getting started</h3>
+  <details><summary>I can't find the Say It icon in the menu bar</summary><div>
+    <p>It's probably hidden behind the camera notch. Quit one or two other menu bar apps, or hold <kbd>⌘</kbd> and drag other icons left. Make sure Say It is running: open it again from Applications or Spotlight.</p>
+  </div></details>
+  <details><summary>The welcome window's “Continue” stays disabled</summary><div>
+    <p>All three items must show green checkmarks. For Accessibility, make sure <span class="ui">Say It</span> is switched on in <span class="ui">System Settings → Privacy &amp; Security → Accessibility</span>. If the speech model is still downloading, wait — the spinner turns into a checkmark when done.</p>
+  </div></details>
+  <details><summary>The speech model download is stuck or failed</summary><div>
+    <p>Check your internet connection, then quit Say It (menu → <span class="ui">Quit Say It</span>) and reopen it — the download resumes. If problems persist, switch to the Apple engine in <span class="ui">Settings → Transcription</span>, which doesn't need the download.</p>
+  </div></details>
+
+  <h3>Dictation</h3>
+  <details><summary>Holding the key does nothing</summary><div>
+    <ul>
+      <li>Check the menu status line. If it says “Preparing speech model…”, wait for it to finish.</li>
+      <li>Accessibility must be on — without it, Say It can't see the key in other apps. Check <span class="ui">System Settings → Privacy &amp; Security → Accessibility</span>.</li>
+      <li>Make sure you're holding the <strong>right-hand</strong> key you chose in <span class="ui">Settings → General</span>, not the left one.</li>
+      <li>Don't press other keys while holding it — that cancels the recording.</li>
+    </ul>
+  </div></details>
+  <details><summary>The pill appears, but no text is typed</summary><div>
+    <ul>
+      <li>If the pill says <span class="ui">Copied — press ⌘V to paste</span>, Accessibility is off: press ⌘V to paste, then re-enable Accessibility.</li>
+      <li>If it says <span class="ui">Didn't catch that</span>, check the microphone in <span class="ui">Settings → Microphone</span> and that the waveform moves when you speak.</li>
+      <li>Make sure your cursor is in a text field. If the welcome window is open on the “Try it out” step and in front, dictations go there instead.</li>
+      <li>A few apps block pasting (some password fields, secure terminals). Use <span class="ui">Copy Recent</span> and paste manually.</li>
+    </ul>
+  </div></details>
+  <details><summary>The waveform doesn't move</summary><div>
+    <p>Say It isn't receiving audio. Check <span class="ui">Settings → Microphone</span>, make sure that mic isn't muted, and confirm Microphone access in <span class="ui">System Settings → Privacy &amp; Security → Microphone</span>.</p>
+  </div></details>
+  <details><summary>Words are often wrong</summary><div>
+    <ul>
+      <li>Use a built-in or wired microphone instead of Bluetooth.</li>
+      <li>Try the other engine in <span class="ui">Settings → Transcription</span>.</li>
+      <li>Add recurring names and terms to the <a href="#dictionary">dictionary</a>, including how they're misheard.</li>
+      <li>Start speaking just after pressing the key and release just after finishing.</li>
+    </ul>
+  </div></details>
+  <details><summary>“period” / “comma” are typed as words</summary><div>
+    <p>Check that <span class="ui">Settings → Transcription → Clean up dictation</span> is on. Also note the deliberate exceptions in <a href="#punctuation">Spoken punctuation</a> — e.g. after “the” or at the very start of a dictation.</p>
+  </div></details>
+  <details><summary>Fn / Globe opens the emoji picker as well</summary><div>
+    <p>Set <span class="ui">System Settings → Keyboard → Press 🌐 key to</span> → <span class="ui">Do Nothing</span>.</p>
+  </div></details>
+  <details><summary>Using Right ⌘ for shortcuts starts a dictation or command</summary><div>
+    <p>It shouldn't — pressing any other key while holding cancels. If you hold Right ⌘ alone for a moment before deciding on a shortcut, a recording may start and then cancel when you press the second key. Choose a different key in <span class="ui">Settings → General</span> if this bothers you.</p>
+  </div></details>
+
+  <h3>AI Polish &amp; command mode</h3>
+  <details><summary>I can't turn on AI Polish</summary><div>
+    <p>The switch unlocks after you save an API key in the same pane. Paste it, click <span class="ui">Save</span>, and wait for the green <span class="ui">Working</span> line.</p>
+  </div></details>
+  <details><summary>Testing the API key shows a red error</summary><div>
+    <ul>
+      <li><strong>“key was rejected”</strong> — the key is wrong or was revoked; copy it again from the Anthropic Console (it starts with <code>sk-ant-</code>).</li>
+      <li><strong>“isn't allowed to use…”</strong> — your Anthropic account or key doesn't have access; check the Console.</li>
+      <li><strong>“rate limit reached” / “busy”</strong> — temporary; try again shortly. Also check that your account has credits.</li>
+      <li><strong>“Couldn't reach Anthropic”</strong> — check your internet connection, VPN or firewall.</li>
+    </ul>
+  </div></details>
+  <details><summary>macOS asks if Say It may use a Keychain item</summary><div>
+    <p>That's your API key. Enter your Mac login password if asked and choose <span class="ui">Always Allow</span>. This can happen once after updates.</p>
+  </div></details>
+  <details><summary>Polish made a change I didn't want</summary><div>
+    <p>Switch <span class="ui">Style</span> to <span class="ui">Light touch everywhere</span> for minimal edits, or turn polish off. Each dictation's final text is in <a href="#history">History</a>.</p>
+  </div></details>
+  <details><summary>Command mode says “Select some text first” but I did</summary><div>
+    <p>The app may not share its selection. Say It tries copying with ⌘C as a fallback; some apps block that too. Try selecting again, or copy the text into Notes or TextEdit and run the command there.</p>
+  </div></details>
+
+  <h3>Permissions &amp; updates</h3>
+  <details><summary>Permissions are switched on but don't seem to work</summary><div>
+    <p>In <span class="ui">System Settings → Privacy &amp; Security → Accessibility</span> (or Microphone), select <span class="ui">Say It</span>, click <span class="ui">−</span> to remove it, then reopen Say It and grant access again. This clears a stale entry left by an older copy of the app.</p>
+  </div></details>
+  <details><summary>Launch at login doesn't work</summary><div>
+    <p>Check <span class="ui">System Settings → General → Login Items &amp; Extensions</span> and make sure Say It is allowed. Say It shows a button to that page if approval is pending.</p>
+  </div></details>
+  <details><summary>“Check for Updates…” fails</summary><div>
+    <p>Check your internet connection and try again later. You can always download the latest version manually from the <a href="https://github.com/bobrauck-ops/say-it-releases/releases/latest">releases page</a> and replace the app in Applications.</p>
+  </div></details>
+
+  <h3>Collecting diagnostics</h3>
+  <p>To see what Say It did during recent dictations, open the Terminal app and run:</p>
+  <pre><code>/usr/bin/log show --last 10m --predicate 'subsystem == "com.robertrauck.sayit"' --info --style compact</code></pre>
+  <p>The log shows each step — key pressed, text length, whether it was pasted or copied, polish timing and fallbacks — with the text of your dictations redacted. Use the full <code>/usr/bin/log</code> path; in some shells, plain <code>log</code> is a different command.</p>
+</section>
+
+<!-- ================= 18. Uninstall ================= -->
+<section id="uninstall">
+  <h2 class="sec"><span class="num">18</span>Uninstalling</h2>
+  <ol class="steps">
+    <li>Menu bar icon → <span class="ui">Quit Say It</span>.</li>
+    <li>If you turned on launch at login, turn it off first in <span class="ui">Settings → General</span> (or remove Say It from <span class="ui">System Settings → General → Login Items &amp; Extensions</span>).</li>
+    <li>Drag <span class="path">/Applications/Say It.app</span> to the Trash.</li>
+    <li>Optionally remove your data in Finder (<span class="ui">Go → Go to Folder…</span>, <kbd>⇧</kbd><kbd>⌘</kbd><kbd>G</kbd>):
+      <ul>
+        <li><span class="path">~/Library/Application Support/Say It</span> — dictionary and history</li>
+        <li><span class="path">~/Library/Application Support/FluidAudio</span> — the speech model (~0.5 GB)</li>
+      </ul>
+    </li>
+    <li>Optionally remove your settings and API key in Terminal:
+      <pre><code>defaults delete com.robertrauck.sayit
+security delete-generic-password -s com.sayit.SayIt.anthropic</code></pre>
+    </li>
+    <li>Optionally remove Say It from <span class="ui">System Settings → Privacy &amp; Security → Microphone</span> and <span class="ui">→ Accessibility</span> (select it, click <span class="ui">−</span>).</li>
+  </ol>
+</section>
+
+<!-- ================= 19. Quick reference ================= -->
+<section id="shortcuts">
+  <h2 class="sec"><span class="num">19</span>Quick reference</h2>
+  <div class="two-col">
+    <div>
+      <h3 style="margin-top:0">Keys</h3>
+      <div class="table-wrap"><table>
+        <tr><th>Action</th><th>Key</th></tr>
+        <tr><td>Dictate</td><td>Hold <kbd>Right ⌥</kbd></td></tr>
+        <tr><td>Command on selection</td><td>Hold <kbd>Right ⌘</kbd></td></tr>
+        <tr><td>Cancel a recording</td><td>Press any other key</td></tr>
+        <tr><td>Undo a command</td><td><kbd>⌘</kbd><kbd>Z</kbd> in the app</td></tr>
+        <tr><td>Paste after “Copied”</td><td><kbd>⌘</kbd><kbd>V</kbd></td></tr>
+        <tr><td>Settings / History / Quit</td><td><kbd>⌘</kbd><kbd>,</kbd> · <kbd>⌘</kbd><kbd>Y</kbd> · <kbd>⌘</kbd><kbd>Q</kbd> (menu open)</td></tr>
+      </table></div>
+    </div>
+    <div>
+      <h3 style="margin-top:0">Say this</h3>
+      <div class="table-wrap"><table>
+        <tr><th>Say</th><th>Get</th></tr>
+        <tr><td>comma</td><td><code>,</code></td></tr>
+        <tr><td>period / full stop</td><td><code>.</code></td></tr>
+        <tr><td>question mark</td><td><code>?</code></td></tr>
+        <tr><td>exclamation point</td><td><code>!</code></td></tr>
+        <tr><td>colon / semicolon</td><td><code>:</code> <code>;</code></td></tr>
+        <tr><td>new line / new paragraph</td><td>↵ / ¶</td></tr>
+      </table></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 20. FAQ ================= -->
+<section id="faq">
+  <h2 class="sec"><span class="num">20</span>FAQ</h2>
+  <details><summary>Does Say It work offline?</summary><div><p>Yes. After the one-time model download, dictation, cleanup, dictionary and history all work without internet. AI Polish and command mode need a connection; if you're offline, polish is skipped and your text is typed as spoken.</p></div></details>
+  <details><summary>Is Say It always listening?</summary><div><p>No. It only records while you hold the dictation or command key. The macOS microphone indicator in the menu bar shows exactly when.</p></div></details>
+  <details><summary>Do I need an Anthropic account?</summary><div><p>Only for the optional AI Polish and command mode. Everything else is free and works without any account.</p></div></details>
+  <details><summary>Which languages are supported?</summary><div><p>Say It is designed for English. The Apple engine can follow other languages macOS supports for on-device recognition; spoken punctuation commands are English only.</p></div></details>
+  <details><summary>Will it work in my browser / Slack / Terminal?</summary><div><p>Yes — dictation works anywhere you can type and paste. Learning from corrections works only in apps whose text macOS can read; command mode works almost everywhere via the copy fallback.</p></div></details>
+  <details><summary>Can I use Say It on an Intel Mac or an older macOS?</summary><div><p>No. It requires Apple Silicon and macOS 26 or later.</p></div></details>
+  <details><summary>How do I move my dictionary to another Mac?</summary><div><p>Quit Say It on both Macs and copy <span class="path">~/Library/Application Support/Say It/dictionary.json</span> across. Your API key isn't included — add it again in Settings.</p></div></details>
+
+  <a class="back" href="#top">↑ Back to top</a>
+</section>
+
+<footer>
+  Say It — push-to-talk dictation for macOS. Guide for version <span data-version>1.0</span>.<br>
+  Downloads and release notes: <a href="https://github.com/bobrauck-ops/say-it-releases/releases">github.com/bobrauck-ops/say-it-releases</a>
+</footer>
+
+</main>
+</div>
+
+<script>
+  // Light/dark toggle (remembers the choice per browser; falls back to system setting).
+  (function () {
+    var root = document.documentElement;
+    try {
+      var saved = localStorage.getItem("sayit-guide-theme");
+      if (saved === "light" || saved === "dark") root.setAttribute("data-theme", saved);
+    } catch (e) {}
+    document.getElementById("themeToggle").addEventListener("click", function () {
+      var current = root.getAttribute("data-theme") ||
+        (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+      var next = current === "dark" ? "light" : "dark";
+      root.setAttribute("data-theme", next);
+      try { localStorage.setItem("sayit-guide-theme", next); } catch (e) {}
+    });
+  })();
+</script>
+</body>
+</html>
