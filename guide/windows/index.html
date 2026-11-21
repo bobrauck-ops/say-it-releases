@@ -568,10 +568,24 @@
     <li><strong>Let go.</strong> A falling chime plays, the pill shows pulsing dots, and about a second later your words are typed where your cursor is, followed by a space so you can keep going.</li>
   </ol>
 
+  <h3 id="hands-free">Hands-free: double-tap for long dictations</h3>
+  <p>For longer dictations you don't have to hold the key the whole time:</p>
+  <ol class="steps">
+    <li><strong>Double-tap</strong> <kbd>Right Ctrl</kbd>. A second chime confirms it, and the pill shows a lock 🔒 and a running timer.</li>
+    <li><strong>Speak</strong> as long as you like. You can let go of the keyboard; typing and clicking work normally while it records.</li>
+    <li><strong>Tap</strong> <kbd>Right Ctrl</kbd> once to finish. Your text is typed at the cursor as usual.</li>
+  </ol>
+  <ul>
+    <li>Press <kbd>Esc</kbd> to cancel a hands-free dictation; nothing is typed.</li>
+    <li>The two taps need to be quick: each tap under about a third of a second, and the second within about half a second of the first.</li>
+    <li>Long dictations are transcribed <strong>while you speak</strong>: at natural pauses, the finished part is processed in the background, so when you tap to finish only the last few seconds remain.</li>
+    <li>A hands-free dictation finishes by itself after 15 minutes. Command mode stays hold-only.</li>
+  </ul>
+
   <h3>Good to know</h3>
   <ul>
     <li><strong>Cancel:</strong> while holding the key, press any other key. Nothing is typed. This also means shortcuts such as <kbd>Right Ctrl</kbd>+<kbd>C</kbd> keep working normally.</li>
-    <li><strong>Quick taps are ignored:</strong> holding for less than a quarter of a second doesn't start a dictation.</li>
+    <li><strong>A single quick tap is ignored;</strong> two quick taps start <a href="#hands-free">hands-free</a> dictation.</li>
     <li><strong>Your clipboard is preserved.</strong> Say It types by pasting, then puts back the text you had copied before.</li>
     <li><strong>Nowhere to type?</strong> If the desktop or taskbar has focus, the text is left on the clipboard and the pill says <span class="ui">Copied — press Ctrl+V to paste</span>.</li>
     <li><strong>Apps running as administrator:</strong> Windows doesn't let normal apps type into programs started with “Run as administrator”. Dictation won't appear there.</li>
@@ -588,6 +602,7 @@
   <div class="pill-demo">
     <div class="pill-item"><span class="pill"><span class="bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></span><span class="pill-caption">Listening (dictation)</span></div>
     <div class="pill-item"><span class="pill"><span class="spark">✦</span><span class="bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></span><span class="pill-caption">Listening (command mode)</span></div>
+    <div class="pill-item"><span class="pill">🔒<span class="bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span><span style="font-size:12px;opacity:.85">1:07</span></span><span class="pill-caption">Listening (hands-free)</span></div>
     <div class="pill-item"><span class="pill"><span class="dots"><i></i><i></i><i></i></span></span><span class="pill-caption">Working</span></div>
   </div>
 
@@ -876,6 +891,9 @@
       <li>Some games and remote-desktop clients ignore pasted text.</li>
     </ul>
   </div></details>
+  <details><summary>Double-tapping does a short dictation instead of hands-free</summary><div>
+    <p>Tap faster: each tap must be released within about a third of a second, and the second tap must come within about half a second. A longer press is treated as a normal hold-to-dictate. The log (lines starting “Dictation key”) shows how long each press was.</p>
+  </div></details>
   <details><summary>“Didn't catch that” every time</summary><div>
     <p>Check <span class="ui">Settings → Microphone</span> (and that the right mic is the Windows default), and that <span class="ui">Settings → Privacy &amp; security → Microphone → Let desktop apps access your microphone</span> is on. Speak after the start chime and keep holding the key until you finish.</p>
   </div></details>
@@ -921,6 +939,8 @@
   <div class="table-wrap"><table>
     <tr><th>To…</th><th>Do this</th></tr>
     <tr><td>Dictate</td><td>Hold <kbd>Right Ctrl</kbd>, speak, let go</td></tr>
+    <tr><td>Dictate hands-free</td><td>Double-tap <kbd>Right Ctrl</kbd>; tap it again to finish</td></tr>
+    <tr><td>Cancel hands-free</td><td><kbd>Esc</kbd></td></tr>
     <tr><td>Edit selected text by voice</td><td>Select it, hold <kbd>Right Alt</kbd>, say what to do, let go</td></tr>
     <tr><td>Cancel while holding</td><td>Press any other key</td></tr>
     <tr><td>Paste text that was copied instead</td><td><kbd>Ctrl</kbd>+<kbd>V</kbd></td></tr>
