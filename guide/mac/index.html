@@ -593,7 +593,7 @@
     <div>Settings… <span class="sc">⌘,</span></div>
     <div>Check for Updates…</div>
     <div class="sep"></div>
-    <div class="dim">Version <span data-version-full>1.0.1</span></div>
+    <div class="dim">Version <span data-version-full>1.0.2</span></div>
     <div>Quit Say It <span class="sc">⌘Q</span></div>
   </div>
   <ul>
@@ -625,6 +625,24 @@
     <li><strong>Release the key.</strong> A soft pop, the pill shows three dots for a moment, and your text is typed at the cursor.</li>
   </ol>
 
+  <h3 id="hands-free">Hands-free: double-tap for long dictations</h3>
+  <p>For longer dictations you don't have to hold the key the whole time:</p>
+  <ol class="steps">
+    <li><strong>Double-tap</strong> <kbd>Right ⌥</kbd>. A second soft click confirms it, and the pill shows a lock 🔒 and a running timer.</li>
+    <li><strong>Speak</strong> as long as you like. You can let go of the keyboard; typing and clicking work normally while it records.</li>
+    <li><strong>Tap</strong> <kbd>Right ⌥</kbd> once to finish. Your text is typed at the cursor as usual.</li>
+  </ol>
+  <ul>
+    <li>Press <kbd>Esc</kbd> to cancel a hands-free dictation; nothing is typed.</li>
+    <li>The two taps need to be quick: each tap under about a third of a second, and the second within about half a second of the first.</li>
+    <li>A hands-free dictation finishes by itself after 15 minutes.</li>
+    <li>Command mode stays hold-only.</li>
+  </ul>
+  <div class="callout warn">
+    <p class="label">Double-tap opens another app too?</p>
+    <p>Some apps use “double-tap Option” as a shortcut of their own, for example the Claude desktop app's Quick Entry. Change that app's shortcut (in Claude: <span class="ui">Settings → General → Quick Entry</span>), or pick a different dictation key in Say It's <span class="ui">Settings → General</span>.</p>
+  </div>
+
   <h3>How the text is inserted</h3>
   <p>Say It places the text on the clipboard, presses <kbd>⌘</kbd><kbd>V</kbd> for you, then restores whatever was on your clipboard before — so your clipboard is left as it was. If text was selected, the dictation replaces it, just as typing would.</p>
 
@@ -639,7 +657,7 @@
 
   <h3>Things that are ignored or cancelled</h3>
   <ul>
-    <li><strong>Very short taps</strong> (under a quarter of a second) are treated as accidental and discarded.</li>
+    <li><strong>A single quick tap</strong> is treated as accidental and discarded (two quick taps start <a href="#hands-free">hands-free</a> dictation).</li>
     <li><strong>Pressing any other key</strong> while holding the dictation key cancels the recording — so using the key as part of a normal shortcut never starts a dictation.</li>
     <li><strong>Silence</strong> produces nothing; the pill says <span class="ui">Didn't catch that</span>.</li>
   </ul>
@@ -661,6 +679,7 @@
   <div class="pill-demo">
     <div class="pill-item"><span class="pill"><span class="bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></span><span class="pill-caption">Listening (dictation)</span></div>
     <div class="pill-item"><span class="pill"><span class="spark">✦</span><span class="bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></span><span class="pill-caption">Listening (command mode)</span></div>
+    <div class="pill-item"><span class="pill">🔒<span class="bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span><span style="font-size:12px;opacity:.85">1:07</span></span><span class="pill-caption">Listening (hands-free)</span></div>
     <div class="pill-item"><span class="pill"><span class="dots"><i></i><i></i><i></i></span></span><span class="pill-caption">Working</span></div>
   </div>
 
@@ -1120,6 +1139,8 @@ security delete-generic-password -s com.sayit.SayIt.anthropic</code></pre>
       <div class="table-wrap"><table>
         <tr><th>Action</th><th>Key</th></tr>
         <tr><td>Dictate</td><td>Hold <kbd>Right ⌥</kbd></td></tr>
+        <tr><td>Dictate hands-free</td><td>Double-tap <kbd>Right ⌥</kbd>; tap again to finish</td></tr>
+        <tr><td>Cancel hands-free</td><td><kbd>Esc</kbd></td></tr>
         <tr><td>Command on selection</td><td>Hold <kbd>Right ⌘</kbd></td></tr>
         <tr><td>Cancel a recording</td><td>Press any other key</td></tr>
         <tr><td>Undo a command</td><td><kbd>⌘</kbd><kbd>Z</kbd> in the app</td></tr>
